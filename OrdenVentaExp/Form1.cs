@@ -1481,6 +1481,12 @@ namespace OrdenVentaExp
                                 return;
                             }
                         }
+                        if (Convert.ToDecimal(txtimporte.Text) > 6000)
+                        {
+                            MessageBox.Show("El Monto del Flete NO Puede ser Mayor a 6,000", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtimporte.Focus();
+                            return;
+                        }
                     }
 
                     if (txttalonemb.Text.Trim() != "")
