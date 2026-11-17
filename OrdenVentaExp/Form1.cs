@@ -1099,7 +1099,7 @@ namespace OrdenVentaExp
                     txt1.KeyPress += new KeyPressEventHandler(DGV2_KeyPress);
                 }
             }
-            if (DGV2.CurrentCell.ColumnIndex == 8)
+            if (DGV2.CurrentCell.ColumnIndex == 9)
             {
                 cntesub = e.Control as ComboBox;
                 if (cntesub != null)
@@ -1109,7 +1109,7 @@ namespace OrdenVentaExp
                 }
                 //}
             }
-            if (DGV2.CurrentCell.ColumnIndex == 6)
+            if (DGV2.CurrentCell.ColumnIndex == 7)
             {
                 DataGridViewComboBoxEditingControl tarim = e.Control as DataGridViewComboBoxEditingControl;
                 if (tarim != null)
@@ -1282,47 +1282,47 @@ namespace OrdenVentaExp
         {
             //Elimina el mensaje de error de la cabecera de la fila
             //DGV2.Rows[e.RowIndex].ErrorText = String.Empty;
-            if (DGV2.CurrentCell.ColumnIndex == 6)
+            if (DGV2.CurrentCell.ColumnIndex == 7)
             {
                 DGV2.Rows[DGV2.CurrentRow.Index].Cells["tipo_tar"].Value = tme;
             }
-            if (DGV2.CurrentCell.ColumnIndex == 7)
+            if (DGV2.CurrentCell.ColumnIndex == 8)
             {
                 if (Convert.ToString(DGV2.CurrentCell.Value).Trim().Length > 0)
                 {
                     find = false;
                     foreach (DataRow dr in subcnte.Select("cnte_clave ='" + txtcliente.Text + "' and entr_clave = '" + Convert.ToString(DGV2.CurrentCell.Value).Trim() + "'"))
                     {
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[8].Value = dr["entr_nombre"].ToString().Trim();
+                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[9].Value = dr["entr_nombre"].ToString().Trim();
                         find = true;
                     }
                     if (find == false)
                     {
                         MessageBox.Show("No existe ningún subcliente con esa clave. Favor de verificar la clave del subcliente", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[9].Value = string.Empty;
                         DGV2.Rows[DGV2.CurrentRow.Index].Cells[8].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[7].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[7].Selected = true;
+                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[8].Selected = true;
                         return;
                     }
                 }
             }
 
-            if (DGV2.CurrentCell.ColumnIndex == 5)
+            if (DGV2.CurrentCell.ColumnIndex == 6)
             {
                 if (Convert.ToString(DGV2.CurrentCell.Value).Trim().Length > 0)
                 {
                     find = false;
                     foreach (DataRow dr in tarimas.Select("emp_clave = '" + Convert.ToString(DGV2.CurrentCell.Value).Trim() + "'"))
                     {
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[6].Value = dr["emp_nombre"].ToString().Trim();
+                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[7].Value = dr["emp_nombre"].ToString().Trim();
                         find = true;
                     }
                     if (find == false)
                     {
                         MessageBox.Show("No existe ninguna tarima con esa clave. Favor de verificar la clave de la tarima", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[7].Value = string.Empty;
                         DGV2.Rows[DGV2.CurrentRow.Index].Cells[6].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[5].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[5].Selected = true;
+                        DGV2.Rows[DGV2.CurrentRow.Index].Cells[6].Selected = true;
                         return;
                     }
                 }
@@ -3936,21 +3936,21 @@ namespace OrdenVentaExp
 
         private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (DGV2.CurrentCell.ColumnIndex == 8) // combo subcliente
+            if (DGV2.CurrentCell.ColumnIndex == 9) // combo subcliente
             {
                 string nombre = cntesub.SelectedItem.ToString().Trim();
                 foreach (DataRow dr in subcnte.Select("nombre = '" + nombre + "' and cnte_clave = '" + txtcliente.Text + "'"))
                 {
                     DGV2.Rows[DGV2.CurrentRow.Index].Cells["subcnte_clave"].Value = Convert.ToString(dr["entr_clave"].ToString().Trim());
-                    DGV2.Rows[DGV2.CurrentRow.Index].Cells[8].Value = nombre;
-                    DGV2.Rows[DGV2.CurrentRow.Index].Cells[9].Selected = true;
+                    DGV2.Rows[DGV2.CurrentRow.Index].Cells[9].Value = nombre;
+                    DGV2.Rows[DGV2.CurrentRow.Index].Cells[10].Selected = true;
                     return;
                 }
-                DGV2.Rows[DGV2.CurrentRow.Index].Cells[8].Value = nombre;
-                DGV2.Rows[DGV2.CurrentRow.Index].Cells[9].Selected = true;
+                DGV2.Rows[DGV2.CurrentRow.Index].Cells[9].Value = nombre;
+                DGV2.Rows[DGV2.CurrentRow.Index].Cells[10].Selected = true;
                 return;
             }
-            if (DGV2.CurrentCell.ColumnIndex == 6)
+            if (DGV2.CurrentCell.ColumnIndex == 7)
             {
                 ComboBox combo = sender as ComboBox;
                 string nombre = combo.SelectedItem.ToString().Trim();

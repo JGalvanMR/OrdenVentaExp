@@ -418,6 +418,7 @@
             this.clave_producto,
             this.nombre,
             this.cajas,
+            this.fecha_cad,
             this.tipo_tar,
             this.nombre_tarima,
             this.subcnte_clave,
@@ -430,7 +431,6 @@
             this.transito,
             this.des_esp,
             this.vta_especial,
-            this.fecha_cad,
             this.pedimento});
             this.DGV2.Location = new System.Drawing.Point(13, 230);
             this.DGV2.Name = "DGV2";
