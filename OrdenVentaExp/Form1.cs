@@ -566,7 +566,7 @@ namespace OrdenVentaExp
                 subcliente.Items.Clear();
                 subcnte.Rows.Clear();
                 cbdestino.Items.Clear();
-                string query = "select cnte_clave, entr_clave, entr_nombre, Rtrim(entr_NOMBRE) + ' ' + RTRIM(ENTR_CIUDAD) AS NOMBRE,ENTR_DIRECCION,ENTR_CIUDAD,ENTR_ESTADO,ENTR_CP,ENTR_COLONIA  from tb_cat_entregas " +
+                string query = "select cnte_clave, entr_clave, entr_nombre, Rtrim(entr_NOMBRE) + ' ' + RTRIM(ENTR_CIUDAD) AS NOMBRE,ENTR_DIRECCION,ENTR_CIUDAD,ENTR_ESTADO,ENTR_CP,ENTR_COLONIA,ENTR_RFC  from tb_cat_entregas " +
                                    " where cnte_clave = '" + txtcliente.Text + "' order by entr_nombre";
                 da = new SqlDataAdapter(query, thisConnection);
                 da.Fill(ds1, "sub");
@@ -637,7 +637,7 @@ namespace OrdenVentaExp
                     subcliente.Items.Clear();
                     cbdestino.Items.Clear();
                     subcnte.Rows.Clear();
-                    string query = "select cnte_clave, entr_clave, entr_nombre, Rtrim(entr_NOMBRE) + ' ' + RTRIM(ENTR_CIUDAD) AS NOMBRE,ENTR_DIRECCION,ENTR_CIUDAD,ENTR_ESTADO,ENTR_CP,ENTR_COLONIA  from tb_cat_entregas " +
+                    string query = "select cnte_clave, entr_clave, entr_nombre, Rtrim(entr_NOMBRE) + ' ' + RTRIM(ENTR_CIUDAD) AS NOMBRE,ENTR_DIRECCION,ENTR_CIUDAD,ENTR_ESTADO,ENTR_CP,ENTR_COLONIA, ENTR_RFC  from tb_cat_entregas " +
                                    " where cnte_clave = '" + txtcliente.Text + "' order by entr_nombre";
                     da = new SqlDataAdapter(query, thisConnection);
                     da.Fill(ds1, "sub");
@@ -4905,8 +4905,8 @@ namespace OrdenVentaExp
             {
                 FrmCom.Destino = cbdestino.Text.Trim();
                 foreach (DataRow row in subcnte.Select("cnte_clave = 'GABOP' AND ENTR_CLAVE= '" + CveSubCli + "'"))
-                    FrmCom.Domicilio = row["ENTR_DIRECCION"].ToString().Trim() + ", " + row["ENTR_CIUDAD"].ToString().Trim() +
-                                       row["ENTR_ESTADO"].ToString().Trim() + " " + row["ENTR_CP"].ToString().Trim() + " " + row["ENTR_COLONIA"].ToString().Trim();
+                    FrmCom.Domicilio = row["ENTR_DIRECCION"].ToString().Trim() + ", " + row["ENTR_CIUDAD"].ToString().Trim() + " " +
+                                       row["ENTR_ESTADO"].ToString().Trim() + " " + row["ENTR_CP"].ToString().Trim() + " TAX ID: " + row["ENTR_RFC"].ToString().Trim();
             }
             else
             {
