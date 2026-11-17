@@ -89,7 +89,7 @@ namespace OrdenVentaExp
             tmgrdped.Columns.Add("transito");
             tmgrdped.Columns.Add("especial");
             tmgrdped.Columns.Add("special");
-            tmgrdped.Columns.Add("fecha_cad");
+            tmgrdped.Columns.Add("fecha_cos");
             tmgrdped.Columns.Add("pedimento");
             DataColumn[] primarykeycolumn = new DataColumn[1];
             primarykeycolumn[0] = tmgrdped.Columns["producto"];
@@ -208,7 +208,7 @@ namespace OrdenVentaExp
 
                     sw.WriteLine("\t{0} {1} {2}|     {3,3}    |\t{4,10}\t|\t{5,5}| {6,30}|", Convert.ToString(DGV2.Rows[i].Cells["linea"].Value), Convert.ToString(DGV2.Rows[i].Cells["clave_producto"].Value), Convert.ToString(DGV2.Rows[i].Cells["nombre"].Value), Convert.ToDecimal(DGV2.Rows[i].Cells["cajas"].Value), Convert.ToString(DGV2.Rows[i].Cells["nombre_tarima"].Value), resulta.ToString("0.00"), Convert.ToString(DGV2.Rows[i].Cells["observaciones"].Value));
                     //sw.WriteLine("\t\t\t\t\t\t\t\t\t\t\t\t\t   |         \t|\t{0,10}\t\t\t\t\t|\t\t|\t\t\t\t\t\t |", Convert.ToString(DGV2.Rows[i].Cells["subcliente"].Value));
-                    sw.WriteLine("\t{0,21}     {1,20} {2,20}|     {3,3}    |\t{4,34}\t\t\t\t\t\t|\t{5,5}| {6,30} |", FechaCadTexto(DGV2.Rows[i]), "", "", "", Convert.ToString(DGV2.Rows[i].Cells["subcliente"].Value), "", "");
+                    sw.WriteLine("\t{0,21}     {1,20} {2,20}|     {3,3}    |\t{4,34}\t\t\t\t\t\t|\t{5,5}| {6,30} |", FechaCosTexto(DGV2.Rows[i]), "", "", "", Convert.ToString(DGV2.Rows[i].Cells["subcliente"].Value), "", "");
                     //sw.WriteLine("\t Pedimento: {0,15} Fecha: {1,10}\t Aduana: {2,5}", Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value), Convert.ToString(DGV2.Rows[i].Cells["fecha_ped"].Value), Convert.ToString(DGV2.Rows[i].Cells["aduana"].Value));                                        
                     sumapedido = sumapedido + Convert.ToInt32(DGV2.Rows[i].Cells["cajas"].Value);
                     sumataraprox = sumataraprox + resulta;
@@ -1206,20 +1206,20 @@ namespace OrdenVentaExp
         }
 
         //valida que la fecha tengo el formato de fecha
-        //fecha de caducidad de la fila para el insert: 'yyyyMMdd' o NULL
-        private string FechaCadSql(DataGridViewRow row)
+        //fecha de cosecha de la fila para el insert: 'yyyyMMdd' o NULL
+        private string FechaCosSql(DataGridViewRow row)
         {
             DateTime dtCad;
-            if (DateTime.TryParseExact(Convert.ToString(row.Cells["fecha_cad"].Value).Trim(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dtCad))
+            if (DateTime.TryParseExact(Convert.ToString(row.Cells["fecha_cos"].Value).Trim(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dtCad))
                 return "'" + dtCad.ToString("yyyyMMdd") + "'";
             return "NULL";
         }
 
-        //texto "Cad: dd/MM/yyyy" para impresión; vacío si no hay fecha
-        private string FechaCadTexto(DataGridViewRow row)
+        //texto "Cos: dd/MM/yyyy" para impresión; vacío si no hay fecha
+        private string FechaCosTexto(DataGridViewRow row)
         {
-            string f = Convert.ToString(row.Cells["fecha_cad"].Value).Trim();
-            return f == "" ? "" : "Cad: " + f;
+            string f = Convert.ToString(row.Cells["fecha_cos"].Value).Trim();
+            return f == "" ? "" : "Cos: " + f;
         }
 
         private Boolean EsFecha(String fecha)
@@ -1238,13 +1238,13 @@ namespace OrdenVentaExp
         //valida que se haya introoducida una fecha en el campo de fecha de pedimento
         private void DGV2_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (DGV2.Columns[e.ColumnIndex].Name == "fecha_cad")
+            if (DGV2.Columns[e.ColumnIndex].Name == "fecha_cos")
             {
                 string txtFecha = Convert.ToString(e.FormattedValue).Trim();
                 DateTime dtCad;
                 if (txtFecha != "" && !DateTime.TryParseExact(txtFecha, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dtCad))
                 {
-                    MessageBox.Show("La fecha de caducidad debe tener el formato dd/MM/yyyy", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("La fecha de cosecha debe tener el formato dd/MM/yyyy", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     e.Cancel = true;
                 }
             }
@@ -1849,7 +1849,7 @@ namespace OrdenVentaExp
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["po_number"].Value) + "', '" + trans + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["subcnte_clave"].Value).Trim() + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', " +
-                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCadSql(DGV2.Rows[i]) + ")";
+                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCosSql(DGV2.Rows[i]) + ")";
                                         reader2 = cmnd2.ExecuteReader();
                                         reader2.Close();
                                         thisConnection.Close();
@@ -2516,7 +2516,7 @@ namespace OrdenVentaExp
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["tipo_tar"].Value).Trim() + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["po_number"].Value) + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["subcnte_clave"].Value).Trim() + "', '', " +
-                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCadSql(DGV2.Rows[i]) + ")";
+                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCosSql(DGV2.Rows[i]) + ")";
 
                                     if (CBmoneda.SelectedIndex == 1 || CBmoneda.SelectedIndex == 2)
                                         cmnd3.CommandText = "insert into tb_det_pedidos (pdn_folio, nrenglon, lin_clave, prod_clave, pdn_num_unidades, pdn_pedimento, pdn_fechap, " +
@@ -2530,7 +2530,7 @@ namespace OrdenVentaExp
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["tipo_tar"].Value).Trim() + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["po_number"].Value) + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["subcnte_clave"].Value).Trim() + "', ''," +
-                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCadSql(DGV2.Rows[i]) + ")";
+                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCosSql(DGV2.Rows[i]) + ")";
                                     //cmnd3.CommandText = "insert into tb_det_pedidos (pdn_folio, nrenglon, lin_clave, prod_clave, pdn_num_unidades, pdn_precio_mn, pdn_precio_usd, pdn_tipo, pdn_pedimento, pdn_fechap, pdn_aduana, pdn_estatus, pdn_lote, pdn_observaciones) values ('" + txtfolio.Text + "','" + (1 + i).ToString() + "','" + Convert.ToString(DGV2.Rows[i].Cells["linea"].Value) + "','" + Convert.ToString(DGV2.Rows[i].Cells["clave_producto"].Value) + "','" + Convert.ToDecimal(DGV2.Rows[i].Cells["cajas"].Value) + "', '0', '" + Convert.ToDecimal(DGV2.Rows[i].Cells["precios"].Value) + "','EXP', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "','" + Convert.ToString(DGV2.Rows[i].Cells["fecha_ped"].Value) + "','" + Convert.ToString(DGV2.Rows[i].Cells["aduana"].Value) + "','" + pdn_estatus + "',' ', '" + Convert.ToString(DGV2.Rows[i].Cells["observaciones"].Value) + "')";
                                     //cmnd3.CommandText = "insert into tb_det_pedidos (pdn_folio, nrenglon, lin_clave, prod_clave, pdn_num_unidades, pdn_precio_mn, pdn_precio_usd, pdn_tipo, pdn_pedimento, pdn_fechap, pdn_aduana, pdn_cantxcaja, pdn_pre_cad) values ('" + txtfolio.Text + "','" + (1 + i).ToString() + "','" + Convert.ToString(DGV2.Rows[i].Cells["linea"].Value) + "','" + Convert.ToString(DGV2.Rows[i].Cells["clave_producto"].Value) + "','" + Convert.ToDecimal(DGV2.Rows[i].Cells["cajas"].Value) + "', 0, '" + Convert.ToDecimal(DGV2.Rows[i].Cells["precios"].Value) + "', 'EXP', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "','" + Convert.ToString(DGV2.Rows[i].Cells["fecha_ped"].Value) + "','" + Convert.ToString(DGV2.Rows[i].Cells["aduana"].Value) + "',' ',' ')";
 
@@ -3346,9 +3346,9 @@ namespace OrdenVentaExp
                     e.Graphics.DrawString(drawtaraprox, drawFont, drawBrush, drawPointtar);
                     e.Graphics.DrawString(tarima, drawFont3, drawBrush, drawtar);
                     e.Graphics.DrawString(subcli, drawFont3, drawBrush, drawsubcli);
-                    string cadTxt = FechaCadTexto(DGV2.Rows[i]);
-                    if (cadTxt != "")
-                        e.Graphics.DrawString(cadTxt, drawFont3, drawBrush, new PointF(30.0F, cont + 13));
+                    string cosTxt = FechaCosTexto(DGV2.Rows[i]);
+                    if (cosTxt != "")
+                        e.Graphics.DrawString(cosTxt, drawFont3, drawBrush, new PointF(30.0F, cont + 13));
                     //e.Graphics.DrawString(aduan, drawFont, drawBrush, drawadua);
                     //decimal mPeso = TraePesoEst(DGV2.Rows[i].Cells["clave_producto"].Value.ToString());
                     decimal mPeso = peso_promedio(DGV2.Rows[i].Cells["clave_producto"].Value.ToString(), ObtenerProdTipo(DGV2.Rows[i].Cells["clave_producto"].Value.ToString()));
@@ -3635,7 +3635,7 @@ namespace OrdenVentaExp
                         drc["especial"] = "Obs Especial";
                         drc["special"] = reader2.GetValue(10).ToString();
                         drc["pedimento"] = reader2.GetValue(11).ToString();
-                        drc["fecha_cad"] = reader2.IsDBNull(14) ? "" : Convert.ToDateTime(reader2.GetValue(14)).ToString("dd/MM/yyyy");
+                        drc["fecha_cos"] = reader2.IsDBNull(14) ? "" : Convert.ToDateTime(reader2.GetValue(14)).ToString("dd/MM/yyyy");
                         tmgrdped.Rows.Add(drc);
                         string Aduana = "01";
                         if (reader2.GetSqlString(1).ToString().Trim() == "17TERMOGRA")
