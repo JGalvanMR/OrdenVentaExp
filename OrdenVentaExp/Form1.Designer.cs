@@ -70,6 +70,7 @@
             this.transito = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.des_esp = new System.Windows.Forms.DataGridViewButtonColumn();
             this.vta_especial = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fecha_cad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pedimento = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.txtpedsigma = new System.Windows.Forms.TextBox();
             this.lbpedsigma = new System.Windows.Forms.Label();
@@ -410,6 +411,7 @@
             // DGV2
             // 
             this.DGV2.AllowUserToAddRows = false;
+            this.DGV2.AutoGenerateColumns = false;
             this.DGV2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DGV2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.linea,
@@ -428,6 +430,7 @@
             this.transito,
             this.des_esp,
             this.vta_especial,
+            this.fecha_cad,
             this.pedimento});
             this.DGV2.Location = new System.Drawing.Point(13, 230);
             this.DGV2.Name = "DGV2";
@@ -591,6 +594,15 @@
             this.vta_especial.MaxInputLength = 483;
             this.vta_especial.Name = "vta_especial";
             this.vta_especial.Visible = false;
+            // 
+            // pedimento
+            // 
+            this.fecha_cad.DataPropertyName = "fecha_cad";
+            this.fecha_cad.HeaderText = "Fecha Cad.";
+            this.fecha_cad.MaxInputLength = 10;
+            this.fecha_cad.Name = "fecha_cad";
+            this.fecha_cad.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.fecha_cad.Width = 80;
             // 
             // pedimento
             // 
@@ -1590,6 +1602,7 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn transito;
         private System.Windows.Forms.DataGridViewButtonColumn des_esp;
         private System.Windows.Forms.DataGridViewTextBoxColumn vta_especial;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fecha_cad;
         private System.Windows.Forms.DataGridViewTextBoxColumn pedimento;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker DtHrCita;
