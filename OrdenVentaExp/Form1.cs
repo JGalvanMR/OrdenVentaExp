@@ -1215,6 +1215,25 @@ namespace OrdenVentaExp
             return "NULL";
         }
 
+        //clave de tarima a partir de su nombre (catalogo tb_cat_tarima); vacio si no existe
+        private string ClaveTarimaPorNombre(string nombre)
+        {
+            nombre = (nombre ?? "").Trim();
+            if (nombre == "") return "";
+            foreach (DataRow dr in tarimas.Select("emp_nombre = '" + nombre.Replace("'", "''") + "'"))
+                return Convert.ToString(dr["emp_clave"]).Trim();
+            return "";
+        }
+
+        //clave de tarima a guardar en pdn_tipotar: la de la celda, o la derivada del nombre si la clave esta vacia
+        private string TipoTarGuardar(DataGridViewRow row)
+        {
+            string clave = Convert.ToString(row.Cells["tipo_tar"].Value).Trim();
+            if (clave == "")
+                clave = ClaveTarimaPorNombre(Convert.ToString(row.Cells["nombre_tarima"].Value));
+            return clave;
+        }
+
         //texto "Cos: dd/MM/yyyy" para impresión; vacío si no hay fecha
         private string FechaCosTexto(DataGridViewRow row)
         {
@@ -1280,49 +1299,50 @@ namespace OrdenVentaExp
         //marca la fila en donde esta el error
         private void DGV2_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            string colEditada = DGV2.Columns[e.ColumnIndex].Name;
             //Elimina el mensaje de error de la cabecera de la fila
             //DGV2.Rows[e.RowIndex].ErrorText = String.Empty;
-            if (DGV2.CurrentCell.OwningColumn.Name == "nombre_tarima")
+            if (colEditada == "nombre_tarima")
             {
-                DGV2.Rows[DGV2.CurrentRow.Index].Cells["tipo_tar"].Value = tme;
+                DGV2.Rows[e.RowIndex].Cells["tipo_tar"].Value = ClaveTarimaPorNombre(Convert.ToString(DGV2.Rows[e.RowIndex].Cells["nombre_tarima"].Value));
             }
-            if (DGV2.CurrentCell.OwningColumn.Name == "subcnte_clave")
+            if (colEditada == "subcnte_clave")
             {
-                if (Convert.ToString(DGV2.CurrentCell.Value).Trim().Length > 0)
+                if (Convert.ToString(DGV2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value).Trim().Length > 0)
                 {
                     find = false;
-                    foreach (DataRow dr in subcnte.Select("cnte_clave ='" + txtcliente.Text + "' and entr_clave = '" + Convert.ToString(DGV2.CurrentCell.Value).Trim() + "'"))
+                    foreach (DataRow dr in subcnte.Select("cnte_clave ='" + txtcliente.Text + "' and entr_clave = '" + Convert.ToString(DGV2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value).Trim() + "'"))
                     {
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["subcliente"].Value = dr["entr_nombre"].ToString().Trim();
+                        DGV2.Rows[e.RowIndex].Cells["subcliente"].Value = dr["entr_nombre"].ToString().Trim();
                         find = true;
                     }
                     if (find == false)
                     {
                         MessageBox.Show("No existe ningún subcliente con esa clave. Favor de verificar la clave del subcliente", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["subcliente"].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["subcnte_clave"].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["subcnte_clave"].Selected = true;
+                        DGV2.Rows[e.RowIndex].Cells["subcliente"].Value = string.Empty;
+                        DGV2.Rows[e.RowIndex].Cells["subcnte_clave"].Value = string.Empty;
+                        DGV2.Rows[e.RowIndex].Cells["subcnte_clave"].Selected = true;
                         return;
                     }
                 }
             }
 
-            if (DGV2.CurrentCell.OwningColumn.Name == "tipo_tar")
+            if (colEditada == "tipo_tar")
             {
-                if (Convert.ToString(DGV2.CurrentCell.Value).Trim().Length > 0)
+                if (Convert.ToString(DGV2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value).Trim().Length > 0)
                 {
                     find = false;
-                    foreach (DataRow dr in tarimas.Select("emp_clave = '" + Convert.ToString(DGV2.CurrentCell.Value).Trim() + "'"))
+                    foreach (DataRow dr in tarimas.Select("emp_clave = '" + Convert.ToString(DGV2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value).Trim() + "'"))
                     {
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["nombre_tarima"].Value = dr["emp_nombre"].ToString().Trim();
+                        DGV2.Rows[e.RowIndex].Cells["nombre_tarima"].Value = dr["emp_nombre"].ToString().Trim();
                         find = true;
                     }
                     if (find == false)
                     {
                         MessageBox.Show("No existe ninguna tarima con esa clave. Favor de verificar la clave de la tarima", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["nombre_tarima"].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["tipo_tar"].Value = string.Empty;
-                        DGV2.Rows[DGV2.CurrentRow.Index].Cells["tipo_tar"].Selected = true;
+                        DGV2.Rows[e.RowIndex].Cells["nombre_tarima"].Value = string.Empty;
+                        DGV2.Rows[e.RowIndex].Cells["tipo_tar"].Value = string.Empty;
+                        DGV2.Rows[e.RowIndex].Cells["tipo_tar"].Selected = true;
                         return;
                     }
                 }
@@ -1845,7 +1865,7 @@ namespace OrdenVentaExp
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["clave_producto"].Value).Trim() + "', " +
                                                             "'" + Convert.ToDecimal(DGV2.Rows[i].Cells["cajas"].Value) + "', '', '', '', '" + moneymn + "','EXP', " +
                                                             "'" + moneyusd + "', 'T', '', '', '', '" + Convert.ToString(DGV2.Rows[i].Cells["observaciones"].Value).Trim() + "', " +
-                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["tipo_tar"].Value).Trim() + "', " +
+                                                            "'" + TipoTarGuardar(DGV2.Rows[i]) + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["po_number"].Value) + "', '" + trans + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["subcnte_clave"].Value).Trim() + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', " +
@@ -2513,7 +2533,7 @@ namespace OrdenVentaExp
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["clave_producto"].Value).Trim() + "', " +
                                                             "'" + Convert.ToDecimal(DGV2.Rows[i].Cells["cajas"].Value) + "', '', '', '', '" + moneymn + "','EXP', " +
                                                             "'" + moneyusd + "', 'T', '', '', '', '" + Convert.ToString(DGV2.Rows[i].Cells["observaciones"].Value).Trim() + "', " +
-                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["tipo_tar"].Value).Trim() + "', " +
+                                                            "'" + TipoTarGuardar(DGV2.Rows[i]) + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["po_number"].Value) + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["subcnte_clave"].Value).Trim() + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCosSql(DGV2.Rows[i]) + ")";
@@ -2527,7 +2547,7 @@ namespace OrdenVentaExp
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["clave_producto"].Value).Trim() + "', " +
                                                             "'" + Convert.ToDecimal(DGV2.Rows[i].Cells["cajas"].Value) + "', '', '', '', '" + moneyusd + "','EXP', " +
                                                             "'" + moneymn + "', 'T', '', '', '', '" + Convert.ToString(DGV2.Rows[i].Cells["observaciones"].Value).Trim() + "', " +
-                                                            "'" + Convert.ToString(DGV2.Rows[i].Cells["tipo_tar"].Value).Trim() + "', " +
+                                                            "'" + TipoTarGuardar(DGV2.Rows[i]) + "', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["po_number"].Value) + "', '', " +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["subcnte_clave"].Value).Trim() + "', ''," +
                                                             "'" + Convert.ToString(DGV2.Rows[i].Cells["vta_especial"].Value) + "', '" + Convert.ToString(DGV2.Rows[i].Cells["pedimento"].Value) + "', " + FechaCosSql(DGV2.Rows[i]) + ")";
